@@ -1,0 +1,76 @@
+from rest_framework.views import Request, Response, status
+from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+from .serializer import UserSerializer,SignUpSerializer
+from .models import User
+from utils.calculus import NutriCalculus
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.views import Request, Response, status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+
+
+class SignInUserView(generics.CreateAPIView):
+
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def perform_create(self, serializer):
+        user = self.request.data
+    
+        nutri_calculus = NutriCalculus(
+            user['weight_kg'],
+            user['height_cm'],
+            user['age_yr'],
+            user['sex']
+        )
+
+        suggested_diet = nutri_calculus.calculate_macro()
+        serializer.save(suggested_diet=suggested_diet)
+    
+
+class UserView(generics.RetrieveUpdateDestroyAPIView):
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes     = [IsAuthenticated]
+
+    serializer_class = UserSerializer
+    queryset         = User.objects.all()
+
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+
+    def perform_destroy(self, instance):
+        instance.is_active = True
+        instance.save()
+
+
+class SignupView(TokenViewBase):
+
+    def post(self, request: Request) -> Response:
+        
+        serializer = SignUpSerializer(data=request.data)
+        serializer.is_valid()
+
+        user = authenticate(
+            email    = serializer.validated_data["email"],
+            password = serializer.validated_data["password"],
+        )
+
+        if not user:
+            return Response(
+                {"detail": "invalid credentials"},
+                status.HTTP_403_FORBIDDEN
+            )
+
+        refresh = RefreshToken.for_user(user)
+        
+        token = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
+        
+        return Response(token)
