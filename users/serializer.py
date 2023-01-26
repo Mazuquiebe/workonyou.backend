@@ -2,6 +2,12 @@ from rest_framework import serializers
 from .models import User
 from rest_framework.validators import UniqueValidator
 from suggested_diets.serializer import SuggestedDiet, SuggestedDietSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.tokens import RefreshToken
+
+import ipdb
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,8 +84,30 @@ class SignUpSerializer(serializers.Serializer):
 
     email    = serializers.EmailField(write_only=True)
     password = serializers.CharField(write_only=True)
+    token_class = RefreshToken
     
     @classmethod
     def get_token(cls,user):
-        token = super().get_token(user)
-        token['user_id'] = user.id
+        token = cls.token_class.for_user(user)
+        token['user_id'] = str(user.id)
+        return token
+
+
+    def validate(self, attrs):
+        
+        self.user = authenticate(
+            email = attrs["email"],
+            password = attrs["password"]
+        )
+
+        if not self.user:
+            raise InvalidToken(detail="invalid credentials",code=401)
+
+        refresh = self.get_token(self.user)
+       
+        data = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        }
+
+        return data

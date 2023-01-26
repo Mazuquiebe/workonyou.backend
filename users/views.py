@@ -9,7 +9,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import Request, Response, status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-
+from rest_framework_simplejwt.views import TokenObtainPairView
+import ipdb
 
 class SignInUserView(generics.CreateAPIView):
 
@@ -44,33 +45,14 @@ class UserView(generics.RetrieveUpdateDestroyAPIView):
 
 
     def perform_destroy(self, instance):
-        instance.is_active = True
+        instance.is_active = False
         instance.save()
 
 
 class SignupView(TokenViewBase):
+    serializer_class = [SignUpSerializer]
 
     def post(self, request: Request) -> Response:
-        
-        serializer = SignUpSerializer(data=request.data)
-        serializer.is_valid()
-
-        user = authenticate(
-            email    = serializer.validated_data["email"],
-            password = serializer.validated_data["password"],
-        )
-
-        if not user:
-            return Response(
-                {"detail": "invalid credentials"},
-                status.HTTP_403_FORBIDDEN
-            )
-
-        refresh = RefreshToken.for_user(user)
-        
-        token = {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        }
-        
-        return Response(token)
+        serializer = self.serializer_class[0](data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status.HTTP_200_OK)
