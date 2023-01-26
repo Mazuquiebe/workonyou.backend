@@ -50,9 +50,10 @@ class UserView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SignupView(TokenViewBase):
-    serializer_class = [SignUpSerializer]
+    
+    serializer_class = SignUpSerializer
 
     def post(self, request: Request) -> Response:
-        serializer = self.serializer_class[0](data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data, status.HTTP_200_OK)

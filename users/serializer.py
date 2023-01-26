@@ -2,11 +2,10 @@ from rest_framework import serializers
 from .models import User
 from rest_framework.validators import UniqueValidator
 from suggested_diets.serializer import SuggestedDiet, SuggestedDietSerializer
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from .exceptions import RequiredFields
 import ipdb
 
 
@@ -82,9 +81,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SignUpSerializer(serializers.Serializer):
 
-    email    = serializers.EmailField(write_only=True)
-    password = serializers.CharField(write_only=True)
     token_class = RefreshToken
+
+    email    = serializers.EmailField(write_only=True,default=None)
+    username = serializers.CharField(write_only=True,default=None)
+    password = serializers.CharField(write_only=True)
     
     @classmethod
     def get_token(cls,user):
@@ -95,13 +96,24 @@ class SignUpSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         
+        email = attrs["email"]
+        username = attrs["username"]
+        password = attrs["password"]
+        
+        if not username and not email:
+            raise RequiredFields
+        
         self.user = authenticate(
-            email = attrs["email"],
+            email    = attrs["email"],
+            username = attrs["username"],
             password = attrs["password"]
         )
 
         if not self.user:
-            raise InvalidToken(detail="invalid credentials",code=401)
+            raise InvalidToken(
+                detail="invalid credentials", 
+                code="invalid_credentials"
+            )
 
         refresh = self.get_token(self.user)
        
