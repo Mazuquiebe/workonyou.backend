@@ -8,7 +8,7 @@ from utils.calculus import NutriCalculus
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import Request, Response, status
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
 import ipdb
 
@@ -33,24 +33,30 @@ class SignInUserView(generics.CreateAPIView):
 
 class UserView(generics.RetrieveUpdateDestroyAPIView):
 
-    authentication_classes = [JWTAuthentication]
-    permission_classes     = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes     = [IsAuthenticated]
 
     serializer_class = UserSerializer
     queryset         = User.objects.all()
+
+
+    # def get_object(self):
+    #     id = self.request.user.id
+    #     user = get_object_or_404(User, id=id)
+    #     return user
 
 
     def perform_update(self, serializer):
         serializer.save()
 
 
-    def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
+    # def perform_destroy(self, instance):
+    #     instance.is_active = False
+    #     instance.save()
 
 
 class SignupView(TokenViewBase):
-    
+
     serializer_class = SignUpSerializer
 
     def post(self, request: Request) -> Response:
