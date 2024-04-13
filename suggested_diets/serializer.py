@@ -30,7 +30,6 @@ class SuggestedDietSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data:SuggestedDiet) -> SuggestedDiet:
-        # ipdb.set_trace()
         return SuggestedDiet.objects.create(**validated_data)
 
 
