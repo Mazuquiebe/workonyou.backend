@@ -6,7 +6,6 @@ from .serializer import UserSerializer,SignUpSerializer
 from .models import User
 from utils.calculus import NutriCalculus
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.views import Request, Response, status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
