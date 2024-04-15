@@ -59,14 +59,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data:dict) -> User:
-        
         suggeted_diet = validated_data.pop('suggested_diet')
-        
         user = User.objects.create_user(**validated_data)
-        
-        suggeted_diet = SuggestedDiet(user=user, **suggeted_diet)
-        suggeted_diet.save(user)
-        
+        SuggestedDiet.objects.create(user=user, **suggeted_diet)
         return user
 
 
@@ -82,7 +77,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
 
 
 class SignUpSerializer(serializers.Serializer):

@@ -16,6 +16,7 @@ class SuggestedDietSerializer(serializers.ModelSerializer):
             "suggested_unsat_fat",
             "suggested_water",
             "basal_metabolism",
+            "user"
         ]
 
         read_only_fields = [

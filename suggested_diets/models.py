@@ -14,4 +14,5 @@ class SuggestedDiet(models.Model):
 
     user = models.OneToOneField('users.User',
                                 related_name='suggested_diet', 
-                                on_delete=models.CASCADE)
+                                on_delete=models.CASCADE,
+                                )
