@@ -5,7 +5,7 @@ from suggested_diets.serializer import SuggestedDiet, SuggestedDietSerializer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
-from .exceptions import RequiredFields
+from .exceptions import RequiredFields, InvalidCredentials
 import ipdb
 
 
@@ -66,6 +66,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance: User, validated_data: dict) -> User:
+        
         for key, value in validated_data.items():
             
             if  key == "password":
@@ -103,16 +104,13 @@ class SignUpSerializer(serializers.Serializer):
             raise RequiredFields
         
         self.user = authenticate(
-            email    = attrs["email"],
-            username = attrs["username"],
-            password = attrs["password"]
+            email    = email,
+            username = username,
+            password = password
         )
 
         if not self.user:
-            raise InvalidToken(
-                detail="invalid credentials", 
-                code="invalid_credentials"
-            )
+            raise InvalidCredentials
 
         refresh = self.get_token(self.user)
        
