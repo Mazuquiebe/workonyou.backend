@@ -24,8 +24,8 @@ class PDF(FPDF):
         self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
 
 
-pdf = PDF()
-pdf.add_page()
-pdf.set_font('Arial', 'B', 16)
-pdf.cell(40, 10, 'Hello World!')
-pdf.output('tuto1.pdf', 'F')
+# pdf = PDF()
+# pdf.add_page()
+# pdf.set_font('Arial', 'B', 16)
+# pdf.cell(40, 10, 'Hello World!')
+# pdf.output('tuto1.pdf', 'F')

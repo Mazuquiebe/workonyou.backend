@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 import ipdb
 
+
 class SignInUserView(generics.CreateAPIView):
 
     serializer_class = UserSerializer
@@ -43,9 +44,9 @@ class UserView(generics.RetrieveUpdateDestroyAPIView):
         serializer.save()
 
 
-    def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
+    # def perform_destroy(self, instance):
+    #     instance.is_active = False
+    #     instance.save()
 
 
 class SignupView(TokenViewBase):

@@ -28,6 +28,10 @@ class User(AbstractUser):
     age_yr = models.IntegerField()
     sex    = models.CharField(max_length=10, choices=SexChoices.choices)
 
+    # suggested_diet = models.OneToOneField('suggested_diets.SuggestedDiet',
+    #                             related_name='user', 
+    #                             )
+    
     # meals      = models.OneToOneField('meals.Meal', on_delete=models.CASCADE)
     # activities = models.OneToOneField('activities.Activity', on_delete=models.CASCADE)
    
