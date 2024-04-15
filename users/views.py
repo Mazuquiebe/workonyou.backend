@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
 import ipdb
 
+
 class SignInUserView(generics.CreateAPIView):
 
     serializer_class = UserSerializer
