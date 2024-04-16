@@ -21,27 +21,28 @@ class NutriCalculus:
         self.water = 2
         
         self.ml_water_per_kg = 0.035
-        self.protein_per_kg  = 1.8
+        self.protein_per_kg  = 1.7
 
 
     def calculate_formule_for_male(self):
         """
         Harris Benedict formule 
-        66 + (13.7 * self.weight) + (5.0 * self.height) - (6.8 * self.age)
-        |        BLOCK_A        | + |     BLOCK_B     | - |     BLOCK_B    | 
+           66    + ( 13.7   * self.weight) + ( 5.0   * self.height) -  ( 6.8    * self.age)
+        |CONST_A|  |CONST_B|                 |CONST_C|                |CONST_D| 
+        |        BLOCK_A                 | + |     BLOCK_B        | - |     BLOCK_B       | 
         """
-#         CONST_A = 66
-#         CONST_B = 13.7
-#         CONST_C = 5.0
-#         CONST_D = 6.8
-
-#         BLOCK_A = CONST_A + CONST_B * self.weight
-#         BLOCK_B = CONST_C * self.height
-#         BLOCK_C = CONST_D * self.age
-        
-#         EQUATION = BLOCK_A + BLOCK_B - BLOCK_C
-#  EQUATION
-        return  66 + (13.7 * float(self.weight)) + (5.0 * int(self.height)) - (6.8 * int(self.age))
+        CONST_A = 66
+        CONST_B = 13.7
+        CONST_C = 5.0
+        CONST_D = 6.8
+ 
+        BLOCK_A = CONST_A + (CONST_B * self.weight)
+        BLOCK_B = CONST_C * self.height
+        BLOCK_C = CONST_D * self.age
+         
+        EQUATION = BLOCK_A + BLOCK_B - BLOCK_C
+        return EQUATION
+        # return  66 + (13.7 * float(self.weight)) + (5.0 * int(self.height)) - (6.8 * int(self.age))
 
 
     def calculate_formule_for_female(self):
@@ -82,6 +83,10 @@ class NutriCalculus:
 
 
     def calculate_imc(self):
+        # O índice de massa corporal (IMC) foi calculado com as medidas de peso e altura, 
+        # através da seguinte fórmula: IMC = peso (kg) / altura2 (m); 
+        # os pontos de corte adotados foram: baixo peso (IMC < 18,5), 
+        # eutrofia (IMC = 18,5 a 24,9), sobrepeso (IMC = 25 a 29,9) e obesidade (IMC ≥ 30)10.
         ...
 
 
@@ -94,7 +99,12 @@ class NutriCalculus:
         self.water = round(self.water,1)
 
         return self.water
+    
 
+# Segundo as Diretrizes da Sociedade Brasileira de 
+# Medicina do Exercício e do Esporte6, 
+# a ingestão adequada de proteínas para atletas de força 
+# seria de 1,6 a 1,7 gramas por quilo de peso corporal por dia. 
 
     def calculate_protein(self, protein_per_kg:float=None)-> dict:
 
@@ -195,13 +205,17 @@ class NutriCalculus:
         # """
 
         # about_protein = f"""
+        #     Segundo as Diretrizes da Sociedade Brasileira de 
+        #     Medicina do Exercício e do Esporte, 
+        #     a ingestão adequada de proteínas para atletas de força 
+        #     seria de 1,6 a 1,7 gramas por kg de peso corporal por dia.
         #     Levamos em consideração que você já 
         #     pratica algum esporte para hipertrofia e manutenção 
         #     de massa muscular, além da perda de gordura
         #     por isso a quantidade de proteína por peso corporal que 
-        #     foi utilizada para calcular essa valor foi de 
+        #     foi utilizada para calcular esse valor foi de 
         #     {self.protein_per_bodyweight} g de proteína por kg 
-        #     de seu peso corporal. Então a quantidade de proteína 
+        #     de peso corporal. Então a quantidade de proteína 
         #     sugerida para seu consumo diario é de aproximadamente 
         #     {reccomended_nutri['protein']} gramas e esse valor deve 
         #     ser divido entre suas refeições.
@@ -229,13 +243,12 @@ class NutriCalculus:
         #     Os Lipídeos conhecidos popularmente como gordura 
         #     também são fundamentais para a boa nutrição do 
         #     ser humano. São fonte de energia para o corpo 
-        #     assim como o carboidrato mas também podem exercer 
-        #     papel estrutural
-        #     e influenciar nos aspectos hormônais do seu corpo.  
+        #     assim como o carboidrato mas também exercem um papel 
+        #     fundamental na s síntese de hormônios do seu organismo.  
         #     Porém devem ser selecionados os tipos de gordura 
         #     saturadas e insaturadas que segundo a maior parte 
         #     dos estudos sobre nutrição apontam que 30% da 
-        #     alimentação didária deve ser coonsumida 
+        #     alimentação diária deve ser coonsumida 
         #     em forma de gordura. Onde 20% deve ser de gordura 
         #     insaturada e 10% de gordura saturada.
         #     Então de acordo com os valores que você nos forneceu
