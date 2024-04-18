@@ -87,6 +87,9 @@ class NutriCalculus:
         # através da seguinte fórmula: IMC = peso (kg) / altura2 (m); 
         # os pontos de corte adotados foram: baixo peso (IMC < 18,5), 
         # eutrofia (IMC = 18,5 a 24,9), sobrepeso (IMC = 25 a 29,9) e obesidade (IMC ≥ 30)10.
+        height_in_meter = self.height/100
+        imc = self.weight / (height_in_meter)**2
+        return imc
         ...
 
 
